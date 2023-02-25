@@ -36,14 +36,19 @@ router.post('/signup',(req,res)=>{
     
 })
 
-router.post('/signin',(req,res)=>{
-    User.findOne({email:req.body.email,password:req.body.password},(err,user)=>{
-        if(err){
-            console.log(err)
-            res.json(err)
-        }else{
-            res.json(user)   
-        }
+router.post('/signin',async (req,res)=>{
+   const user = await User.findOne({email: req.body.email});
+    console.log(user);
+    if (user) {
+      const result = req.body.password === user.password;
+      if (result) {
+        res.status(200).json({message:"found"});
+      } else {
+        res.status(400).json({ error: "password doesn't match" });
+      }
+    } else {
+      res.status(400).json({ error: "User doesn't exist" });
+    }
     })
-})
+
 module.exports = router

@@ -15,6 +15,13 @@ class Signin extends StatefulWidget {
 
 class _SigninState extends State<Signin> {
   final _formKey = GlobalKey<FormState>();
+  _showSnackbar() {
+    var snackBar = const SnackBar(
+        duration: const Duration(minutes: 5),
+        content: Text("Login Successful"));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   Future save() async {
     var res = await http.post("http://localhost:8080/signin",
         headers: <String, String>{
@@ -25,8 +32,14 @@ class _SigninState extends State<Signin> {
           'password': user.password
         });
     print(res.body);
-    Navigator.push(
-        context, new MaterialPageRoute(builder: (context) => Dashboard()));
+
+    if (res.body != '{"message":"found"}') {
+      print(res.body);
+    } else {
+      _showSnackbar();
+      Navigator.push(
+          context, new MaterialPageRoute(builder: (context) => Dashboard()));
+    }
   }
 
   User user = User('', '');
@@ -106,7 +119,7 @@ class _SigninState extends State<Signin> {
                   child: TextFormField(
                     controller: TextEditingController(text: user.email),
                     onChanged: (value) {
-                      user.email = value;
+                      user.password = value;
                     },
                     validator: (value) {
                       if (value.isEmpty) {

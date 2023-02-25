@@ -103,11 +103,17 @@ class _SignupState extends State<Signup> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: TextFormField(
-                    controller: TextEditingController(text: user.email),
+                    controller: TextEditingController(text: user.password),
                     onChanged: (value) {
-                      user.email = value;
+                      user.password = value;
                     },
                     validator: (value) {
+                      String pattern =
+                          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$';
+                      RegExp regExp = new RegExp(pattern);
+                      if (!regExp.hasMatch(value))
+                        return "please enter password using atleast 1 capital 1 small letter \n 1 special character and 1 digit";
+
                       if (value.isEmpty) {
                         return 'Enter something';
                       }
@@ -140,7 +146,7 @@ class _SignupState extends State<Signup> {
                     width: 400,
                     child: TextButton(
                         style: TextButton.styleFrom(
-                          foregroundColor: Colors.blue,
+                          backgroundColor: Colors.blue,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16.0)),
                         ),
